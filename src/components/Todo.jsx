@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useEffect, useState } from 'react'; 
 import { Container } from './todostyle';
 import { Box } from './todostyle';
 import Task from './Task';
@@ -17,7 +17,7 @@ function Todo() {
       return
     }
     setTarefa({tarefa: input, concluido:false, id: Date.now()});
- }
+  }
 
  function addTarefa(event) {
    event.preventDefault();
@@ -25,43 +25,55 @@ function Todo() {
     return
   };
   setItens([...itens, tarefa]);
+  localStorage.setItem('tarefas', JSON.stringify([...itens, tarefa]));
   setTarefa({tarefa: '', concluido:false, id: ''});
-}
-
-function handleCheckbox(event, id) {
-  const input = event.target.checked;
-  const newItens = itens.map((itens) => {
-    if(id === itens.id) {
-      return {
-        ...itens, concluido: input
-      }
-    }
-    return itens;
-  })
-  setItens(newItens);
-}
-
-function clearTarefa(id) {
-  const newItens = itens.filter((item) => {
-    if(item.id === id && item.concluido) {
-      return false
-    }
-    if(item.id === id && !item.concluido){
-      window.alert('❗ Conclua o seu lembrete antes de excluí-lo ❗');
-      return true
-    }
-    return item.id !== id
-  });
-  console.log(newItens);
-  setItens(newItens);
-}
-
-function clearAll() {
-  const confirm = window.confirm('❗ Deseja excluir todos os seus lembretes? ❗')
-  if(confirm) {
-    setItens([])
   }
-}
+
+  function handleCheckbox(event, id) {
+    const input = event.target.checked;
+    const newItens = itens.map((itens) => {
+      if(id === itens.id) {
+        return {
+          ...itens, concluido: input
+        }
+      }
+      return itens;
+    })
+    setItens(newItens);
+  }
+
+  function clearTarefa(id) {
+    const newItens = itens.filter((item) => {
+      if(item.id === id && item.concluido) {
+        return false
+      }
+      if(item.id === id && !item.concluido){
+        window.alert('❗ Conclua o seu lembrete antes de excluí-lo ❗');
+        return true
+      }
+      return item.id !== id
+    });
+    console.log(newItens);
+    setItens(newItens);
+    localStorage.setItem('tarefas', JSON.stringify(newItens));
+  }
+
+  function clearAll() {
+    const confirm = window.confirm('❗ Deseja excluir todos os seus lembretes? ❗')
+    if(confirm) {
+      setItens([])
+      localStorage.setItem('tarefas', JSON.stringify([]));
+    }
+  }
+  
+  useEffect(() => {
+    if(itens.length === 0) {
+      setItens(JSON.parse(localStorage.getItem('tarefas')))
+    }
+  }, [itens.length])
+
+
+
 
   return (
     <Container>
