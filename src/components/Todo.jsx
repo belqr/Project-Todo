@@ -21,12 +21,13 @@ function Todo() {
 
  function addTarefa(event) {
    event.preventDefault();
-  if (!tarefa.tarefa) {
-    return
-  };
+    if (!tarefa.tarefa) {
+      return
+    };
   setItens([...itens, tarefa]);
-  localStorage.setItem('tarefas', JSON.stringify([...itens, tarefa]));
-  setTarefa({tarefa: '', concluido:false, id: ''});
+    // setItens(prevState => ([ ...prevState, tarefa ]))
+    localStorage.setItem('tarefas', JSON.stringify([...itens, tarefa]));
+    setTarefa({tarefa: '', concluido:false, id: ''});
   }
 
   function handleCheckbox(event, id) {
@@ -67,12 +68,11 @@ function Todo() {
   }
   
   useEffect(() => {
-    if(itens.length === 0) {
-      setItens(JSON.parse(localStorage.getItem('tarefas')))
+    if(itens?.length === 0) {
+      setItens([...JSON.parse(localStorage.getItem('tarefas'))])
+      console.log(JSON.parse(localStorage.getItem('tarefas')));
     }
   }, [itens.length])
-
-
 
 
   return (
@@ -84,7 +84,7 @@ function Todo() {
         <button type='submit' id='btn-del' onClick={clearAll}> x </button>
       </form>
       <Box>
-        {itens.map((item) => (
+        {itens?.map((item) => (
           <Task handleCheckbox={handleCheckbox} clearTarefa={clearTarefa} concluido={tarefa.concluido} item={item} key={item.id} />
 	    ))}
       </Box>
