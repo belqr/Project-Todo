@@ -69,8 +69,11 @@ function Todo() {
   
   useEffect(() => {
     if(itens?.length === 0) {
-      setItens([...JSON.parse(localStorage.getItem('tarefas'))])
-      console.log(JSON.parse(localStorage.getItem('tarefas')));
+      const tarefaStorage = JSON.parse(localStorage.getItem('tarefas'))
+      if(Array.isArray(tarefaStorage)) {
+        setItens(tarefaStorage);
+      }
+      console.log(tarefaStorage);
     }
   }, [itens.length])
 
